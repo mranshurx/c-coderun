@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Code Runner by Cyber Anxhu</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #58a6ff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            color: #c9d1d9;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
+        }
+
+        #terminal {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 20px;
+            height: 75vh;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 16px;
+            line-height: 1.5;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .cursor {
+            display: inline-block;
+            background-color: #58a6ff;
+            width: 10px;
+            height: 18px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>C++ Code Runner by Cyber Anxhu</h2>
+        <p>Start typing anywhere on your keyboard...</p>
+    </div>
+
+    <div id="terminal">
+        <span id="code-output"></span><span class="cursor"></span>
+    </div>
+
+    <script>
+        // PUT YOUR CUSTOM C++ CODE HERE:
+        const customCode = `#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, Cyber Anxhu!" << endl;
+    
+    // Initializing system sequence
+    int security_level = 9;
+    if (security_level > 5) {
+        cout << "Access Granted to Terminal." << endl;
+    }
+
+    for(int i = 0; i < 3; i++) {
+        cout << "Executing process " << i << "..." << endl;
+    }
+
+    return 0;
+}`;
+
+        let currentIndex = 0;
+        const outputElement = document.getElementById('code-output');
+        const terminal = document.getElementById('terminal');
+
+        // Number of characters to output per keypress (makes typing faster and smoother)
+        const charsPerPress = 3;
+
+        document.addEventListener('keydown', function(event) {
+            // Prevent default behavior for special keys if needed (like scrolling on spacebar)
+            if (event.key === " " || event.key === "Tab") {
+                event.preventDefault();
+            }
+
+            if (currentIndex < customCode.length) {
+                // Grab the next chunk of custom code
+                const chunk = customCode.substr(currentIndex, charsPerPress);
+                outputElement.textContent += chunk;
+                currentIndex += charsPerPress;
+
+                // Auto-scroll terminal to the bottom
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        });
+    </script>
+
+</body>
+</html>
