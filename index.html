@@ -109,6 +109,31 @@
             color: #7ee787;
             font-size: 14px;
             margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-content {
+            flex-grow: 1;
+            white-space: pre-wrap;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .input-line input {
+            background: transparent;
+            border: none;
+            color: #7ee787;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            outline: none;
+            width: 100px;
+            margin-left: 5px;
+            border-bottom: 1px solid #7ee787;
         }
     </style>
 </head>
@@ -127,15 +152,15 @@
             </div>
         </div>
 
-        <!-- Right Panel: Fixed Custom Script Runner & Output -->
+        <!-- Right Panel: Interactive Script Runner -->
         <div class="panel">
             <div class="panel-title">
                 <span>C++ Compiler & Runner</span>
-                <button class="run-btn" onclick="compileAndRun()">Run Code ▶</button>
+                <button class="run-btn" onclick="startProgram()">Run Code ▶</button>
             </div>
             
             <div class="panel-title" style="margin-top: 5px; margin-bottom: 2px;">Source Code:</div>
-            <div class="terminal-box" id="display-code" style="height: 45%; color: #58a6ff;">#include <iostream>
+            <div class="terminal-box" id="display-code" style="height: 40%; color: #58a6ff;">#include <iostream>
 using namespace std;
 
 int main() {
@@ -157,8 +182,14 @@ int main() {
     return 0;
 }</div>
 
-            <div class="panel-title" style="margin-top: 10px; margin-bottom: 2px;">Output:</div>
-            <div id="compiler-output" class="output-box">Click 'Run Code' to execute...</div>
+            <div class="panel-title" style="margin-top: 10px; margin-bottom: 2px;">Console Output:</div>
+            <div id="compiler-output" class="output-box">
+                <div id="output-text" class="output-content">Click 'Run Code' to execute...</div>
+                <div id="input-container" class="input-line" style="display: none;">
+                    <span id="prompt-label"></span>
+                    <input type="number" id="user-input" autofocus onkeypress="handleInput(event)">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -204,19 +235,55 @@ int main() {
             }
         });
 
-        // --- Right Panel Simulation Logic for Custom Code ---
-        function compileAndRun() {
-            const outputDiv = document.getElementById('compiler-output');
-            outputDiv.textContent = "Compiling...\n";
+        // --- Right Panel Interactive Execution Logic ---
+        function startProgram() {
+            const outputText = document.getElementById('output-text');
+            const inputContainer = document.getElementById('input-container');
+            const userInput = document.getElementById('user-input');
+            const promptLabel = document.getElementById('prompt-label');
+
+            // Reset console
+            outputText.textContent = "Compiling program...\n";
+            inputContainer.style.display = 'none';
 
             setTimeout(() => {
-                // Simulating successful compile and execution output for the Fibonacci code (using n = 5)
-                outputDiv.textContent = 
-                    "Compilation successful.\n\n" +
-                    "Enter the number of terms: 5\n" +
-                    "Fibonacci Series: 0 1 1 2 3 \n\n" +
-                    "Process exited with code 0.";
-            }, 600);
+                outputText.textContent = "Compilation successful.\n\n";
+                promptLabel.textContent = "Enter the number of terms: ";
+                inputContainer.style.display = 'flex';
+                userInput.value = '';
+                userInput.focus();
+            }, 500);
+        }
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const inputContainer = document.getElementById('input-container');
+                const userInput = document.getElementById('user-input');
+                const outputText = document.getElementById('output-text');
+                
+                const n = parseInt(userInput.value);
+                if (isNaN(n) || n < 0) {
+                    alert("Please enter a valid positive integer!");
+                    return;
+                }
+
+                // Hide input box and lock it into the output text
+                inputContainer.style.display = 'none';
+                outputText.textContent += `Enter the number of terms: ${n}\n`;
+
+                // Calculate Fibonacci series matching your C++ logic
+                let t1 = 0, t2 = 1, nextTerm;
+                let result = "Fibonacci Series: ";
+
+                for (let i = 1; i <= n; ++i) {
+                    result += t1 + " ";
+                    nextTerm = t1 + t2;
+                    t1 = t2;
+                    t2 = nextTerm;
+                }
+
+                outputText.textContent += result + "\n\nProgram exited with code 0.";
+            }
         }
     </script>
 
