@@ -159,8 +159,8 @@
                 <button class="run-btn" onclick="startProgram()">Run Code ▶</button>
             </div>
             
-            <div class="panel-title" style="margin-top: 5px; margin-bottom: 2px;">Source Code (Loaded from GitHub):</div>
-            <div class="terminal-box" id="display-code" style="height: 40%; color: #58a6ff;">Loading script from GitHub...</div>
+            <div class="panel-title" style="margin-top: 5px; margin-bottom: 2px;">Source Code (Auto-grasped from GitHub folder):</div>
+            <div class="terminal-box" id="display-code" style="height: 40%; color: #58a6ff;">Scanning source-code folder...</div>
 
             <div class="panel-title" style="margin-top: 10px; margin-bottom: 2px;">Console Output:</div>
             <div id="compiler-output" class="output-box">
@@ -176,17 +176,28 @@
     <script>
         let customCode = "";
 
-        // Fetch the C++ script from your GitHub folder on load
+        // Automatically fetch whatever file is inside the source-code folder on GitHub
         async function loadScriptFromGitHub() {
             try {
-                // Replace 'YOUR_GITHUB_USERNAME' and 'YOUR_REPO_NAME' with your actual details
-                const response = await fetch('https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/source-code/fibonacci.cpp');
-                if (!response.ok) throw new Error("Failed to fetch script");
+                // Replace with your actual GitHub username and repo name
+                const apiUrl = 'https://api.github.com/repos/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/contents/source-code';
                 
-                customCode = await response.text();
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Could not access repository folder.");
+                
+                const files = await response.json();
+                
+                // Locate the first .cpp file in that folder automatically
+                const targetFile = files.find(file => file.name.endsWith('.cpp'));
+                if (!targetFile) throw new Error("No .cpp file found in the folder.");
+
+                // Fetch the code content from the file's direct download link
+                const codeResponse = await fetch(targetFile.download_url);
+                customCode = await codeResponse.text();
+                
                 document.getElementById('display-code').textContent = customCode;
             } catch (error) {
-                customCode = "// Error loading script from GitHub. Check repo path.";
+                customCode = "// Error: Make sure your GitHub username and repository name are updated in index.html";
                 document.getElementById('display-code').textContent = customCode;
             }
         }
@@ -215,7 +226,7 @@
         // --- Right Panel Interactive Execution Logic ---
         function startProgram() {
             if (!customCode || customCode.startsWith("// Error")) {
-                alert("Script is still loading or failed to load from GitHub.");
+                alert("Source code has not loaded successfully from GitHub yet.");
                 return;
             }
 
