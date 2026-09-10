@@ -56,7 +56,6 @@
 
     <div class="header">
         <h2>C++ Code Runner by Cyber Anxhu</h2>
-        <p>Start typing anywhere on your keyboard...</p>
     </div>
 
     <div id="terminal">
@@ -64,21 +63,23 @@
     </div>
 
     <script>
-        // PUT YOUR CUSTOM C++ CODE HERE:
         const customCode = `#include <iostream>
 using namespace std;
 
 int main() {
-    cout << "Hello, Cyber Anxhu!" << endl;
-    
-    // Initializing system sequence
-    int security_level = 9;
-    if (security_level > 5) {
-        cout << "Access Granted to Terminal." << endl;
-    }
+    int n;
+    long t1 = 0, t2 = 1, nextTerm;
 
-    for(int i = 0; i < 3; i++) {
-        cout << "Executing process " << i << "..." << endl;
+    cout << "Enter the number of terms: ";
+    cin >> n;
+
+    cout << "Fibonacci Series: ";
+
+    for (int i = 1; i <= n; ++i) {
+        cout << t1 << " ";
+        nextTerm = t1 + t2;
+        t1 = t2;
+        t2 = nextTerm;
     }
 
     return 0;
@@ -88,22 +89,18 @@ int main() {
         const outputElement = document.getElementById('code-output');
         const terminal = document.getElementById('terminal');
 
-        // Number of characters to output per keypress (makes typing faster and smoother)
         const charsPerPress = 3;
 
         document.addEventListener('keydown', function(event) {
-            // Prevent default behavior for special keys if needed (like scrolling on spacebar)
             if (event.key === " " || event.key === "Tab") {
                 event.preventDefault();
             }
 
             if (currentIndex < customCode.length) {
-                // Grab the next chunk of custom code
                 const chunk = customCode.substr(currentIndex, charsPerPress);
                 outputElement.textContent += chunk;
                 currentIndex += charsPerPress;
 
-                // Auto-scroll terminal to the bottom
                 terminal.scrollTop = terminal.scrollHeight;
             }
         });
