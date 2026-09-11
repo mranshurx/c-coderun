@@ -1,21 +1,19 @@
-#include <iostream>
-using namespace std;
-
-int main() {
-    int n;
-    long t1 = 0, t2 = 1, nextTerm;
-
-    cout << "Enter the number of terms: ";
-    cin >> n;
-
-    cout << "Fibonacci Series: ";
-
-    for (int i = 1; i <= n; ++i) {
-        cout << t1 << " ";
-        nextTerm = t1 + t2;
-        t1 = t2;
-        t2 = nextTerm;
-    }
-
-    return 0;
+#include<iostream.h>
+int main()
+{
+  int n,num,digit,rev=0;
+cin >> num;
+n = num;
+do
+{
+ digit = num % 10;
+rev = (rev * 10) + digit;
+num = num / 10 ;
+}  while(num !=0)
+cout<<"The reverse of the number is :" <<rev<<"\n";
+if(n == rev)
+    cout <<"The number is palindrome" ;
+else
+    cout <<" \n The number  is not a palindrome" ;
+return 0 ;
 }
